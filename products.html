@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rajambal Cottons - Our Complete Collection</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <img src="images/logo.png" alt="Rajambal Cottons Logo" class="logo-icon">
+                <span class="logo-text">Rajambal Cottons</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html#home">Home</a></li>
+                    <li><a href="index.html#products">Products</a></li>
+                    <li><a href="index.html#about">About</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="products">
+            <div class="container">
+                <h1>Our Complete Collection</h1>
+                <p>Discover the full range of our premium handcrafted cotton products. Each item is made with care, ensuring comfort, style, and durability.</p>
+                <div id="allProductsGrid" class="product-grid"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html#home">Home</a></li>
+                        <li><a href="index.html#products">Products</a></li>
+                        <li><a href="index.html#about">About</a></li>
+                        <li><a href="index.html#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Info</h3>
+                    <p>37, Mettu Street, Kanchipuram</p>
+                    <p>Email: <a href="mailto:Prabhu.Vajjiram@yahoo.com">Vajjiram</a></p>
+                    <p>Phone: +91-44-67259797, +91-9443369336</p>
+                    <p>Fax: +91-44-27233699</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-icons">
+                        <a href="#" target="_blank">Facebook</a>
+                        <a href="#" target="_blank">Instagram</a>
+                        <a href="#" target="_blank">Twitter</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Rajambal Cottons. All rights reserved. | Designed by Prabu Vajjiram</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/productData.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('get_products.php')
+                .then(response => response.json())
+                .then(data => {
+                    const productsGrid = document.getElementById('allProductsGrid');
+                    if (data.products && data.products.length > 0) {
+                        data.products.forEach(product => {
+                            const productElement = document.createElement('div');
+                            productElement.className = 'product-card';
+                            let colorOptions = '';
+                            if (product.colors) {
+                                const colors = product.colors.split('|');
+                                colorOptions = '<div class="color-options">';
+                                colors.forEach(color => {
+                                    const [colorName, colorImagePath] = color.split(':');
+                                    colorOptions += `<button class="color-option" style="background-image: url('${colorImagePath}')" title="${colorName}"></button>`;
+                                });
+                                colorOptions += '</div>';
+                            }
+                            productElement.innerHTML = `
+                                <img src="${product.image_path}" alt="${product.title}">
+                                <h3>${product.title}</h3>
+                                <p>₹${product.price.toFixed(2)}</p>
+                                ${colorOptions}
+                                <button class="add-to-cart">Add to Cart</button>
+                            `;
+                            productsGrid.appendChild(productElement);
+                        });
+                    } else {
+                        productsGrid.innerHTML = '<p>No products available at the moment. Please check back later.</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    const productsGrid = document.getElementById('allProductsGrid');
+                    productsGrid.innerHTML = '<p>An error occurred while loading products. Please try again later.</p>';
+                });
+        });
+    </script>
+</body>
+</html>
